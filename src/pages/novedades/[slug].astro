@@ -6,12 +6,16 @@ import { formatNewsDate, getNewsTransitionNames, repairNewsDetail, repairNewsSum
 import { repairApiPayload } from '@/lib/utils';
 
 export async function getStaticPaths() {
-  const response = await newsApi.list();
-  const posts = repairApiPayload(response.news || []);
+  try {
+    const response = await newsApi.list();
+    const posts = repairApiPayload(response.news || []);
 
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-  }));
+    return posts.map((post) => ({
+      params: { slug: post.slug },
+    }));
+  } catch {
+    return [];
+  }
 }
 
 const slug = Astro.params.slug || '';

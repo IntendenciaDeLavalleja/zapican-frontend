@@ -2,27 +2,40 @@
 import SiteLayout from '@/layouts/SiteLayout.astro';
 import NewsCard from '@/components/news/NewsCard.astro';
 import { newsApi, siteApi } from '@/lib/api';
+import { DEFAULT_SITE, DEFAULT_THEME } from '@/lib/defaults';
 import { repairApiPayload } from '@/lib/utils';
 
 const PER_PAGE = 7;
 const currentPage = Math.max(1, Number(Astro.url.searchParams.get('pagina') || 1));
 
-const [configResp, newsResp, blocksResp, novBlocksResp] = await Promise.all([
-  siteApi.config(),
-  newsApi.list({ page: currentPage, per_page: PER_PAGE }),
-  siteApi.blocks('home'),
-  siteApi.blocks('novedades'),
-]);
+let site = DEFAULT_SITE;
+let theme = DEFAULT_THEME;
+let navBlock = undefined;
+let posts = [];
+let totalPages: number = 1;
+let newsHeaderContent: Record<string, string> = {};
 
-const site = repairApiPayload(configResp.site);
-const theme = repairApiPayload(configResp.theme);
-const navBlock = repairApiPayload((blocksResp.blocks || []).find((b) => b.block_type === 'navigation'));
-const posts = repairApiPayload(newsResp.news || []);
-const totalPages: number = newsResp.pages || 1;
+try {
+  const [configResp, newsResp, blocksResp, novBlocksResp] = await Promise.all([
+    siteApi.config(),
+    newsApi.list({ page: currentPage, per_page: PER_PAGE }),
+    siteApi.blocks('home'),
+    siteApi.blocks('novedades'),
+  ]);
+
+  site = repairApiPayload(configResp.site);
+  theme = repairApiPayload(configResp.theme);
+  navBlock = repairApiPayload((blocksResp.blocks || []).find((b) => b.block_type === 'navigation'));
+  posts = repairApiPayload(newsResp.news || []);
+  totalPages = newsResp.pages || 1;
+  const headerBlock = (novBlocksResp.blocks || []).find((b) => b.block_type === 'news_header');
+  newsHeaderContent = (headerBlock?.content ?? {}) as Record<string, string>;
+} catch {
+  posts = [];
+}
 
 // Header color config (set from admin panel)
-const headerBlock = (novBlocksResp.blocks || []).find((b) => b.block_type === 'news_header');
-const hCfg = (headerBlock?.content ?? {}) as Record<string, string>;
+const hCfg = newsHeaderContent;
 const headingColor = hCfg.heading_color || '#0f172a';
 const subtitleColor = hCfg.subtitle_color || '#475569';
 const labelColor = hCfg.label_color || '#64748b';

@@ -4,9 +4,13 @@ import { eventsApi, siteApi } from '@/lib/api';
 import { repairApiPayload } from '@/lib/utils';
 
 export async function getStaticPaths() {
-  const response = await eventsApi.list();
-  const events = repairApiPayload(response.events || []);
-  return events.map((e) => ({ params: { slug: e.slug } }));
+  try {
+    const response = await eventsApi.list();
+    const events = repairApiPayload(response.events || []);
+    return events.map((e) => ({ params: { slug: e.slug } }));
+  } catch {
+    return [];
+  }
 }
 
 const slug = Astro.params.slug || '';

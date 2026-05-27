@@ -4,12 +4,12 @@ import type { SitePublic, PageBlockPublic, ThemePublic } from '@/lib/api/types';
 import SmallNav from './Navbar/SmallNav';
 import BigNav from './Navbar/BigNav';
 
-export const DEFAULT_LOGO_SRC = '/batlle/logo.svg';
+export const DEFAULT_LOGO_SRC = null;
 
 export function resolveSiteLogoSrc(site: SitePublic) {
   const candidate = site.logo_url || site.shield_url || DEFAULT_LOGO_SRC;
-  if (/^https?:\/\/upload\.wikimedia\.org\//i.test(candidate)) {
-    return DEFAULT_LOGO_SRC;
+  if (!candidate || /^https?:\/\/upload\.wikimedia\.org\//i.test(candidate)) {
+    return null;
   }
   return candidate;
 }

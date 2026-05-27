@@ -1,18 +1,28 @@
 ---
 import SiteLayout from '@/layouts/SiteLayout.astro';
 import { eventsApi, siteApi } from '@/lib/api';
+import { DEFAULT_SITE, DEFAULT_THEME } from '@/lib/defaults';
 import { repairApiPayload } from '@/lib/utils';
 
-const [configResp, eventsResp, blocksResp] = await Promise.all([
-  siteApi.config(),
-  eventsApi.list(),
-  siteApi.blocks('home'),
-]);
+let site = DEFAULT_SITE;
+let theme = DEFAULT_THEME;
+let navBlock = undefined;
+let allEvents = [];
 
-const site      = repairApiPayload(configResp.site);
-const theme     = repairApiPayload(configResp.theme);
-const navBlock  = repairApiPayload((blocksResp.blocks || []).find((b) => b.block_type === 'navigation'));
-const allEvents = repairApiPayload(eventsResp.events || []);
+try {
+  const [configResp, eventsResp, blocksResp] = await Promise.all([
+    siteApi.config(),
+    eventsApi.list(),
+    siteApi.blocks('home'),
+  ]);
+
+  site = repairApiPayload(configResp.site);
+  theme = repairApiPayload(configResp.theme);
+  navBlock = repairApiPayload((blocksResp.blocks || []).find((b) => b.block_type === 'navigation'));
+  allEvents = repairApiPayload(eventsResp.events || []);
+} catch {
+  allEvents = [];
+}
 
 const now = new Date();
 const upcoming = allEvents.filter((e) => e.start_datetime && new Date(e.start_datetime) >= now);

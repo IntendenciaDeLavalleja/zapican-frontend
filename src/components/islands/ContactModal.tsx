@@ -106,7 +106,7 @@ export default function ContactModal({ open, onClose, site }: Props) {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-sky-500">
-                    Municipio de Batlle y Ordóñez
+                    {site.name || 'Municipio'}
                   </p>
                   <h2 className="mt-2 text-2xl font-black tracking-[-0.03em] text-slate-950 sm:text-3xl">
                     Escribinos

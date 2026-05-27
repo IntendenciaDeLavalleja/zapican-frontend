@@ -75,7 +75,8 @@ export default function SmallNav({ site, navItems, ctaLabel, ctaHref, logoSrc, a
                     const target = event.currentTarget;
                     if (target.dataset.fallbackApplied === 'true') return;
                     target.dataset.fallbackApplied = 'true';
-                    target.src = '/batlle/logo.svg';
+                    target.removeAttribute('src');
+                    target.style.display = 'none';
                   }}
                 />
               </div>

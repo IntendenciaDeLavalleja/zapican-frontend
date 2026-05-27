@@ -250,7 +250,7 @@ export default function AuthoritiesBlock({ authorities, authoritiesBlock, meetin
 
                 <div className="mt-5 flex items-center gap-2.5 text-sm text-white/55">
                   <MapPin className="h-4 w-4 shrink-0" />
-                  <span>{site?.address || 'Batlle y Ordóñez, Lavalleja'}</span>
+                  <span>{site?.address || site?.name || 'Municipio'}</span>
                 </div>
               </div>
             </div>

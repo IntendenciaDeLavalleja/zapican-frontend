@@ -74,7 +74,8 @@ export default function BigNav({ site, navItems, ctaLabel, ctaHref, logoSrc, act
                   const target = event.currentTarget;
                   if (target.dataset.fallbackApplied === 'true') return;
                   target.dataset.fallbackApplied = 'true';
-                  target.src = '/batlle/logo.svg';
+                  target.removeAttribute('src');
+                  target.style.display = 'none';
                 }}
               />
             </div>

@@ -1,6 +1,6 @@
 import { Landmark, ChevronUp } from 'lucide-react';
 import type { SitePublic, PageBlockPublic, ThemePublic } from '@/lib/api/types';
-import { DEFAULT_LOGO_SRC, resolveSiteLogoSrc } from './Navbar';
+import { resolveSiteLogoSrc } from './Navbar';
 
 type Props = {
   site: SitePublic;
@@ -45,7 +45,8 @@ export default function MunicipalFooter({ site, navBlock, theme }: Props) {
                     const target = event.currentTarget;
                     if (target.dataset.fallbackApplied === 'true') return;
                     target.dataset.fallbackApplied = 'true';
-                    target.src = DEFAULT_LOGO_SRC;
+                    target.removeAttribute('src');
+                    target.style.display = 'none';
                   }}
                 />
               </div>
