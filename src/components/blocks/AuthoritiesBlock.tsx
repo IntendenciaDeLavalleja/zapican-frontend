@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Users2, Mail, Phone, Facebook, Twitter, Linkedin, X, ChevronRight } from 'lucide-react';
+import { MapPin, Users2, Mail, Phone, Facebook, Twitter, Linkedin, X, ChevronRight, ChevronUp } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { AuthorityPublic, MeetingPublic, PageBlockPublic, SitePublic } from '@/lib/api/types';
 
@@ -34,6 +34,8 @@ function avatarUrl(name: string) {
 // ─── Modal ────────────────────────────────────────────────────────────────────
 
 function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; onClose: () => void }) {
+  const [bioExpanded, setBioExpanded] = useState(false);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handler);
@@ -66,7 +68,7 @@ function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; on
       <motion.div
         role="dialog"
         aria-modal="true"
-        className="relative z-10 w-full max-w-md rounded-t-[2.4rem] sm:rounded-[2.4rem] bg-white overflow-hidden shadow-[0_48px_120px_rgba(15,23,42,0.28)]"
+        className="relative z-10 w-full max-w-md overflow-hidden rounded-t-[2.4rem] bg-white shadow-[0_48px_120px_rgba(15,23,42,0.28)] sm:rounded-[2.4rem]"
         initial={{ y: 64, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 64, opacity: 0 }}
@@ -76,13 +78,13 @@ function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; on
         <div className="mx-auto mt-3 h-1 w-10 rounded-full bg-slate-200 sm:hidden" />
 
         {/* Photo hero */}
-        <div className="relative w-full h-64 sm:h-72 bg-slate-100 overflow-hidden">
+        <div className="relative h-[30rem] w-full overflow-hidden bg-slate-100 sm:h-[34rem]">
           <img
             src={authority.photo_url || avatarUrl(authority.name)}
             alt={authority.name}
             className="h-full w-full object-cover object-top"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/55 via-slate-950/8 to-transparent" />
           <button
             type="button"
             onClick={onClose}
@@ -91,88 +93,134 @@ function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; on
           >
             <X className="h-5 w-5" />
           </button>
-        </div>
-
-        {/* Header */}
-        <div className="px-6 pt-5 pb-4 border-b border-slate-100">
-          <h2 className="text-xl font-bold leading-snug text-slate-900">{authority.name}</h2>
-          <p className="mt-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-[#0d3b66]">
-            {authority.role}
-          </p>
-        </div>
-
-        {/* Body */}
-        <div className="max-h-[60vh] overflow-y-auto px-6 py-5 space-y-5">
-          {authority.bio && (
-            <p className="text-sm leading-7 text-slate-600">{authority.bio}</p>
-          )}
-
-          {hasContact && (
-            <div className="space-y-2.5">
-              {authority.email && (
-                <a
-                  href={`mailto:${authority.email}`}
-                  className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100"
+          <motion.div
+            layout
+            className="absolute inset-x-0 bottom-0 px-4 pb-4 sm:px-5 sm:pb-5"
+          >
+            <motion.div
+              layout
+              animate={{
+                backgroundColor: bioExpanded ? 'rgba(255,255,255,0.94)' : 'rgba(255,255,255,0.10)',
+                borderColor: bioExpanded ? 'rgba(255,255,255,0.40)' : 'rgba(255,255,255,0.10)',
+                boxShadow: bioExpanded
+                  ? '0 30px 70px rgba(15,23,42,0.2)'
+                  : '0 14px 30px rgba(15,23,42,0.08)',
+                backdropFilter: bioExpanded ? 'blur(16px)' : 'blur(4px)',
+              }}
+              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+              className="rounded-[2rem] border"
+            >
+              {hasExtra && (
+                <button
+                  type="button"
+                  onClick={() => setBioExpanded((current) => !current)}
+                  aria-expanded={bioExpanded}
+                  aria-label={bioExpanded ? 'Ocultar biografia' : 'Mostrar biografia'}
+                  className="absolute left-1/2 top-0 z-10 flex h-11 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/92 text-slate-500 shadow-[0_12px_24px_rgba(15,23,42,0.16)] transition hover:-translate-y-[55%] hover:text-slate-700"
                 >
-                  <Mail className="h-4 w-4 shrink-0 text-slate-400" />
-                  <span className="truncate">{authority.email}</span>
-                </a>
+                  <motion.span
+                    animate={{ rotate: bioExpanded ? 180 : 0 }}
+                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                  >
+                    <ChevronUp className="h-5 w-5" />
+                  </motion.span>
+                </button>
               )}
-              {authority.phone && (
-                <a
-                  href={`tel:${authority.phone}`}
-                  className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100"
-                >
-                  <Phone className="h-4 w-4 shrink-0 text-slate-400" />
-                  <span>{authority.phone}</span>
-                </a>
-              )}
-            </div>
-          )}
 
-          {hasSocial && (
-            <div className="flex items-center gap-2.5">
-              {authority.facebook_url && (
-                <a
-                  href={authority.facebook_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600"
-                >
-                  <Facebook className="h-4 w-4" />
-                </a>
-              )}
-              {authority.twitter_url && (
-                <a
-                  href={authority.twitter_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Twitter / X"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-800"
-                >
-                  <Twitter className="h-4 w-4" />
-                </a>
-              )}
-              {authority.linkedin_url && (
-                <a
-                  href={authority.linkedin_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700"
-                >
-                  <Linkedin className="h-4 w-4" />
-                </a>
-              )}
-            </div>
-          )}
+              <div className="px-6 pb-5 pt-6">
+                <h2 className="text-xl font-bold leading-snug text-slate-900">{authority.name}</h2>
+                <p className="mt-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-[#0d3b66]">
+                  {authority.role}
+                </p>
+              </div>
 
-          {!hasExtra && (
-            <p className="py-4 text-center text-sm italic text-slate-400">
-              Sin información adicional disponible.
-            </p>
-          )}
+              <AnimatePresence initial={false}>
+                {bioExpanded && (
+                  <motion.div
+                    key="authority-extra"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                    className="overflow-hidden border-t border-slate-200/80"
+                  >
+                    <div className="max-h-[38vh] space-y-5 overflow-y-auto px-6 py-5">
+                      {authority.bio && (
+                        <p className="text-sm leading-7 text-slate-600">{authority.bio}</p>
+                      )}
+
+                      {hasContact && (
+                        <div className="space-y-2.5">
+                          {authority.email && (
+                            <a
+                              href={`mailto:${authority.email}`}
+                              className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100"
+                            >
+                              <Mail className="h-4 w-4 shrink-0 text-slate-400" />
+                              <span className="truncate">{authority.email}</span>
+                            </a>
+                          )}
+                          {authority.phone && (
+                            <a
+                              href={`tel:${authority.phone}`}
+                              className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100"
+                            >
+                              <Phone className="h-4 w-4 shrink-0 text-slate-400" />
+                              <span>{authority.phone}</span>
+                            </a>
+                          )}
+                        </div>
+                      )}
+
+                      {hasSocial && (
+                        <div className="flex items-center gap-2.5">
+                          {authority.facebook_url && (
+                            <a
+                              href={authority.facebook_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="Facebook"
+                              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600"
+                            >
+                              <Facebook className="h-4 w-4" />
+                            </a>
+                          )}
+                          {authority.twitter_url && (
+                            <a
+                              href={authority.twitter_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="Twitter / X"
+                              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-800"
+                            >
+                              <Twitter className="h-4 w-4" />
+                            </a>
+                          )}
+                          {authority.linkedin_url && (
+                            <a
+                              href={authority.linkedin_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="LinkedIn"
+                              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700"
+                            >
+                              <Linkedin className="h-4 w-4" />
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {!hasExtra && (
+                <p className="border-t border-slate-100 px-6 py-5 text-center text-sm italic text-slate-400">
+                  Sin informacion adicional disponible.
+                </p>
+              )}
+            </motion.div>
+          </motion.div>
         </div>
       </motion.div>
     </motion.div>
