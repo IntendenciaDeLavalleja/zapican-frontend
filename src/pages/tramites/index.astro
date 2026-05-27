@@ -1,0 +1,68 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import ProcedureWizard from '@/components/islands/ProcedureWizard';
+import ProcedureTracker from '@/components/islands/ProcedureTracker';
+import { proceduresApi, siteApi } from '@/lib/api';
+import { sanitizePageBlocks, sanitizeProcedureTypes } from '@/lib/utils';
+import type { PageBlockPublic, ProcedureTypePublic, SitePublic, ThemePublic } from '@/lib/api/types';
+
+let site: SitePublic | null = null;
+let theme: ThemePublic | null = null;
+let blocks: PageBlockPublic[] = [];
+let procedures: ProcedureTypePublic[] = [];
+
+const selectedSlug = Astro.url.searchParams.get('tipo');
+
+try {
+  const [configResp, blocksResp, proceduresResp] = await Promise.all([
+    siteApi.config(),
+    siteApi.blocks('home'),
+    proceduresApi.list(),
+  ]);
+  site = configResp.site;
+  theme = configResp.theme;
+  blocks = sanitizePageBlocks(blocksResp.blocks || []);
+  procedures = sanitizeProcedureTypes(proceduresResp.items || []);
+} catch {
+  // handled in template fallback
+}
+
+const navBlock = blocks.find((block) => block.block_type === 'navigation');
+const proceduresBlock = blocks.find((block) => block.block_type === 'procedures_preview');
+---
+
+{site ? (
+  <SiteLayout
+    site={site}
+    theme={theme}
+    navBlock={navBlock}
+    title="Trámites"
+    description={`Presentá trámites y documentación para ${site.name}.`}
+  >
+    <div class="mx-auto flex max-w-7xl flex-col gap-8">
+      <section class="mx-auto w-full max-w-4xl">
+        <div class="relative overflow-hidden rounded-[2.2rem] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.78))] tramites-header-panel p-7 shadow-[0_24px_60px_rgba(15,23,42,0.10)] backdrop-blur-xl sm:p-8 lg:p-9">
+          <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-slate-500">Trámites digitales</p>
+          <h1 class="mt-3 max-w-2xl text-3xl font-black tracking-tighter text-slate-950 sm:text-4xl lg:text-5xl">{proceduresBlock?.title || 'Presentá tu trámite por etapas, con una experiencia clara y dinámica.'}</h1>
+          <p class="mt-4 max-w-2xl text-base leading-7 text-slate-600">{proceduresBlock?.subtitle || 'Elegí un tipo de trámite y el formulario te va a mostrar sólo las etapas necesarias para completarlo.'}</p>
+          <div class="mt-6 flex flex-wrap gap-3 text-sm text-slate-600">
+            <span class="rounded-full border border-slate-200 bg-white px-4 py-2">Elección rápida</span>
+            <span class="rounded-full border border-slate-200 bg-white px-4 py-2">Pasos claros</span>
+            <span class="rounded-full border border-slate-200 bg-white px-4 py-2">Carga puntual</span>
+          </div>
+        </div>
+      </section>
+
+      <ProcedureWizard client:load procedures={procedures} selectedSlug={selectedSlug} />
+
+      <ProcedureTracker client:load />
+    </div>
+  </SiteLayout>
+) : (
+  <div style="font-family: sans-serif; padding: 2rem; border-bottom: 2px solid red; background: #fff5f5; color: #800; text-align: center;">
+    <p style="font-weight: bold;">No se pudo cargar el módulo de trámites.</p>
+    <p style="font-size: 0.9em; margin-top: 0.5rem;">Verificá que el backend esté activo y exponiendo la API pública.</p>
+  </div>
+)}
+  </div>
+)}

@@ -1,0 +1,114 @@
+﻿---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import MunicipalHomeExperience from '@/components/islands/MunicipalHomeExperience';
+import { siteApi, newsApi, eventsApi, meetingsApi, authoritiesApi, proceduresApi, agendaApi } from '@/lib/api';
+import { repairApiPayload, sanitizePageBlocks, sanitizeProcedureTypes } from '@/lib/utils';
+import type {
+    AuthorityPublic,
+    CalendarItemPublic,
+    EventSummary,
+    MeetingPublic,
+    ProcedureTypePublic,
+    SitePublic,
+    ThemePublic,
+    NewsSummary,
+    PageBlockPublic,
+} from '@/lib/api/types';
+
+let site: SitePublic | null = null;
+let theme: ThemePublic | null = null;
+let news: NewsSummary[] = [];
+let events: EventSummary[] = [];
+let agendaItems: CalendarItemPublic[] = [];
+let meetings: MeetingPublic[] = [];
+let authorities: AuthorityPublic[] = [];
+let blocks: PageBlockPublic[] = [];
+let procedures: ProcedureTypePublic[] = [];
+let fetchError: string | null = null;
+
+const fontFamilies = {
+    inter: {
+        body: "'Plus Jakarta Sans', system-ui, sans-serif",
+        display: "'Barlow', 'Plus Jakarta Sans', system-ui, sans-serif",
+    },
+    lora: {
+        body: "'Lora', Georgia, serif",
+        display: "'Lora', Georgia, serif",
+    },
+    merriweather: {
+        body: "'Merriweather', Georgia, serif",
+        display: "'Merriweather', Georgia, serif",
+    },
+    system: {
+        body: "system-ui, -apple-system, sans-serif",
+        display: "system-ui, -apple-system, sans-serif",
+    },
+} as const;
+
+try {
+    const configResp = await siteApi.config();
+    site = repairApiPayload(configResp.site);
+    theme = repairApiPayload(configResp.theme);
+
+    const [newsResp, eventsResp, meetingsResp, authsResp, blocksResp, proceduresResp, agendaResp] = await Promise.all([
+        newsApi.list(),
+        eventsApi.list(),
+        meetingsApi.list(),
+        authoritiesApi.list(),
+        siteApi.blocks('home'),
+        proceduresApi.list(),
+        agendaApi.list(),
+    ]);
+
+    news = repairApiPayload(newsResp.news || []);
+    events = repairApiPayload(eventsResp.events || []);
+    agendaItems = repairApiPayload(agendaResp.agenda || []);
+    meetings = repairApiPayload(meetingsResp.meetings || []);
+    authorities = repairApiPayload(authsResp.authorities || []);
+    blocks = sanitizePageBlocks(repairApiPayload(blocksResp.blocks || []));
+    procedures = sanitizeProcedureTypes(repairApiPayload(proceduresResp.items || []));
+} catch (err: any) {
+    fetchError = err?.message ?? 'No se pudo cargar la información del sitio.';
+}
+
+const fontPreset = fontFamilies[(theme?.font_style as keyof typeof fontFamilies) || 'inter'] || fontFamilies.inter;
+---
+
+{site ? (
+    <BaseLayout title={site.name} description={site.short_description}>
+        <style is:inline set:html={`:root {
+            --site-primary: ${theme?.colors?.primary || '#1f6feb'};
+            --site-secondary: ${theme?.colors?.secondary || '#0b3b6f'};
+            --site-accent: ${theme?.colors?.accent || '#f59e0b'};
+            --site-background: ${theme?.colors?.background || '#ffffff'};
+            --site-text: ${theme?.colors?.text || '#0f172a'};
+            --municipality-primary: ${theme?.colors?.primary || '#1f6feb'};
+            --municipality-secondary: ${theme?.colors?.secondary || '#0b3b6f'};
+            --municipality-accent: ${theme?.colors?.accent || '#f59e0b'};
+            --municipality-background: ${theme?.colors?.background || '#ffffff'};
+            --municipality-text: ${theme?.colors?.text || '#0f172a'};
+                --site-background-gradient: linear-gradient(${theme?.background_gradient?.angle ?? 180}deg, ${theme?.background_gradient?.from || theme?.colors?.background || '#ffffff'}, ${theme?.background_gradient?.to || theme?.colors?.background || '#ffffff'});
+            --site-font-body: ${fontPreset.body};
+            --site-font-display: ${fontPreset.display};
+        }
+        ${theme?.custom_css || ''}`}></style>
+        <MunicipalHomeExperience
+            client:load
+            site={site}
+            theme={theme}
+            enableNightMode={true}
+            news={news}
+            events={events}
+            agendaItems={agendaItems}
+            meetings={meetings}
+            authorities={authorities}
+            procedures={procedures}
+            blocks={blocks}
+        />
+    </BaseLayout>
+) : (
+    <div style="font-family: sans-serif; padding: 2rem; border-bottom: 2px solid red; background: #fff5f5; color: #800; text-align: center;">
+        <p style="font-weight: bold;">{fetchError}</p>
+        <p style="font-size: 0.9em; margin-top: 0.5rem;">Verifica que el backend esté activo y exponiendo los datos.</p>
+    </div>
+)}

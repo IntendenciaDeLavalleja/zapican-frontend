@@ -1,0 +1,30 @@
+---
+export interface Props {
+  title: string;
+  href: string;
+  start: string;
+  end?: string | null;
+  location?: string | null;
+  image?: string | null;
+}
+const { title, href, start, end, location, image } = Astro.props;
+const fmt = (iso: string) =>
+  new Date(iso).toLocaleString('es-UY', {
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: false,
+  });
+const startLabel = fmt(start);
+const endLabel = end ? fmt(end) : null;
+---
+<a href={href} class="block border rounded-lg overflow-hidden hover:shadow transition" style="background: var(--municipality-background);">
+  {image && (
+    <div class="aspect-video bg-gray-100 overflow-hidden">
+      <img src={image} alt={title} class="w-full h-full object-cover" loading="lazy" />
+    </div>
+  )}
+  <div class="p-4">
+    <h3 class="font-semibold text-lg leading-snug" style="color: var(--municipality-secondary);">{title}</h3>
+    <p class="text-sm opacity-80 mt-1">{startLabel}{endLabel ? ` — ${endLabel}` : ''}</p>
+    {location && <p class="text-xs opacity-70 mt-1">📍 {location}</p>}
+  </div>
+</a>

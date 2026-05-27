@@ -1,0 +1,29 @@
+---
+export interface Props {
+  title: string;
+  href: string;
+  date?: string | null;
+  excerpt?: string | null;
+  image?: string | null;
+  badge?: string | null;
+}
+const { title, href, date, excerpt, image, badge } = Astro.props;
+const dateLabel = date
+  ? new Date(date).toLocaleDateString('es-UY', { day: '2-digit', month: 'short', year: 'numeric' })
+  : null;
+---
+<a href={href} class="block border rounded-lg overflow-hidden hover:shadow transition" style="background: var(--municipality-background);">
+  {image && (
+    <div class="aspect-video bg-gray-100 overflow-hidden">
+      <img src={image} alt={title} class="w-full h-full object-cover" loading="lazy" />
+    </div>
+  )}
+  <div class="p-4">
+    {badge && (
+      <span class="inline-block text-xs px-2 py-1 rounded mb-2" style="background: var(--municipality-accent); color: white;">{badge}</span>
+    )}
+    <h3 class="font-semibold text-lg leading-snug" style="color: var(--municipality-secondary);">{title}</h3>
+    {dateLabel && <p class="text-xs opacity-70 mt-1">{dateLabel}</p>}
+    {excerpt && <p class="text-sm mt-2 opacity-80 line-clamp-3">{excerpt}</p>}
+  </div>
+</a>

@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import { SITE_NAME } from '@/config';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string | null;
+  noIndex?: boolean;
+}
+
+const { title, description, ogImage, noIndex = false } = Astro.props;
+const normalizedTitle = title?.trim();
+const fullTitle = normalizedTitle && SITE_NAME && normalizedTitle !== SITE_NAME
+  ? `${normalizedTitle} · ${SITE_NAME}`
+  : normalizedTitle || SITE_NAME;
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <ClientRouter />
+    <title>{fullTitle}</title>
+    {description && <meta name="description" content={description} />}
+    {noIndex && <meta name="robots" content="noindex,nofollow" />}
+    <meta property="og:title" content={fullTitle} />
+    {description && <meta property="og:description" content={description} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <script is:inline>
+      (() => {
+        try {
+          const storedMode = window.localStorage.getItem('municipios-theme-mode');
+          const preferredMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
+          document.documentElement.dataset.themeMode = storedMode || preferredMode;
+        } catch {
+          document.documentElement.dataset.themeMode = 'day';
+        }
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen antialiased">
+    <slot />
+  </body>
+</html>

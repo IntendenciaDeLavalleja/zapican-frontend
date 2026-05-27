@@ -1,0 +1,1124 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Lora:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap');
+@import "tailwindcss";
+@plugin "daisyui";
+
+:root {
+  --municipality-primary: #2f6f4e;
+  --municipality-secondary: #1f3a2c;
+  --municipality-accent: #d6a84b;
+  --municipality-background: #ffffff;
+  --municipality-text: #0f172a;
+  --site-background-gradient: linear-gradient(180deg, #f8fbf7, #eef5ef);
+  --site-font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --site-font-display: 'Barlow', 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+@theme {
+  --color-muni-primary: var(--municipality-primary);
+  --color-muni-secondary: var(--municipality-secondary);
+  --color-muni-accent: var(--municipality-accent);
+  --color-muni-bg: var(--municipality-background);
+  --color-muni-text: var(--municipality-text);
+}
+
+body {
+  background-color: var(--municipality-background);
+  background-image: var(--site-background-gradient);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: var(--municipality-text);
+  font-family: var(--site-font-body);
+  transition: color 220ms ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--site-font-display);
+}
+
+html {
+  background: var(--site-background-gradient);
+}
+
+.municipal-home-root {
+  position: relative;
+}
+
+.municipal-home-root[data-card-style='soft'] .municipal-panel-light,
+.municipal-home-root[data-card-style='soft'] .municipal-news-card,
+.municipal-home-root[data-card-style='soft'] .municipal-authority-card,
+.municipal-home-root[data-card-style='soft'] .municipal-contact-card,
+.municipal-home-root[data-card-style='soft'] .municipal-showcase-card,
+.municipal-home-root[data-card-style='soft'] .municipal-glass-panel {
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+.municipal-home-root[data-card-style='outline'] .municipal-panel-light,
+.municipal-home-root[data-card-style='outline'] .municipal-news-card,
+.municipal-home-root[data-card-style='outline'] .municipal-authority-card,
+.municipal-home-root[data-card-style='outline'] .municipal-contact-card,
+.municipal-home-root[data-card-style='outline'] .municipal-showcase-card,
+.municipal-home-root[data-card-style='outline'] .municipal-glass-panel {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  border: 1px solid color-mix(in srgb, var(--site-secondary) 18%, white) !important;
+  box-shadow: none !important;
+}
+
+.municipal-home-root[data-card-style='elevated'] .municipal-panel-light,
+.municipal-home-root[data-card-style='elevated'] .municipal-news-card,
+.municipal-home-root[data-card-style='elevated'] .municipal-authority-card,
+.municipal-home-root[data-card-style='elevated'] .municipal-contact-card,
+.municipal-home-root[data-card-style='elevated'] .municipal-showcase-card,
+.municipal-home-root[data-card-style='elevated'] .municipal-glass-panel {
+  box-shadow: 0 34px 80px rgba(15, 23, 42, 0.18) !important;
+  transform: translateY(-2px);
+}
+
+.municipal-panel-light,
+.municipal-panel-dark,
+.municipal-showcase-card,
+.municipal-news-card,
+.municipal-agenda-panel,
+.municipal-glass-panel,
+.municipal-authority-card,
+.municipal-contact-visual,
+.municipal-contact-card {
+  transition: background-color 220ms ease, box-shadow 220ms ease, border-color 220ms ease, color 220ms ease;
+}
+
+/* Default overlay gradients — overridden in night mode; components reference these via var() in backgroundImage */
+.municipal-showcase-card {
+  --showcase-overlay: linear-gradient(135deg, rgba(253, 252, 248, 0.94), rgba(243, 237, 226, 0.84));
+  background-image: var(--showcase-overlay);
+  background-color: #fdfcf8;
+}
+
+.municipal-glass-panel {
+  --glass-overlay: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.94));
+  background-image: var(--glass-overlay);
+}
+
+html[data-theme-mode='night'] {
+  background: #06101c;
+  /* Override CSS variables that components use as inline styles */
+  --municipality-background: #0b1725;
+}
+
+html[data-theme-mode='night'] body {
+  color: #e5edf5;
+  background-color: #07111b;
+  background-image: linear-gradient(180deg, #07111b, #0b1725 46%, #102031);
+}
+
+/* Override the inline-style background on <main> (SiteLayout uses var(--site-background-gradient)) */
+html[data-theme-mode='night'] main {
+  background: linear-gradient(180deg, #07111b, #0b1725 46%, #102031) !important;
+  color: #e5edf5 !important;
+}
+
+html[data-theme-mode='night'] .municipal-home-root {
+  color: #e5edf5;
+}
+
+html[data-theme-mode='night'] .municipal-panel-light,
+html[data-theme-mode='night'] .municipal-news-card,
+html[data-theme-mode='night'] .municipal-authority-card,
+html[data-theme-mode='night'] .municipal-contact-card,
+html[data-theme-mode='night'] .municipal-glass-panel {
+  border-color: rgba(148, 163, 184, 0.12);
+  background-color: rgba(11, 23, 37, 0.84) !important;
+  box-shadow: 0 30px 70px rgba(2, 6, 23, 0.36);
+}
+
+html[data-theme-mode='night'] .municipal-glass-panel {
+  --glass-overlay: linear-gradient(180deg, rgba(11, 23, 37, 0.78), rgba(15, 23, 42, 0.72));
+}
+
+html[data-theme-mode='night'] .municipal-showcase-card {
+  --showcase-overlay: linear-gradient(135deg, rgba(9, 17, 30, 0.72), rgba(15, 23, 42, 0.65));
+  color: #e5edf5;
+  box-shadow: 0 28px 70px rgba(2, 6, 23, 0.34);
+}
+
+html[data-theme-mode='night'] .municipal-panel-dark,
+html[data-theme-mode='night'] .municipal-agenda-panel,
+html[data-theme-mode='night'] .municipal-contact-visual {
+  box-shadow: 0 30px 80px rgba(2, 6, 23, 0.46);
+}
+
+html[data-theme-mode='night'] .municipal-home-root .text-slate-950,
+html[data-theme-mode='night'] .municipal-home-root .text-slate-900,
+html[data-theme-mode='night'] .municipal-home-root .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+html[data-theme-mode='night'] .municipal-home-root .text-slate-600,
+html[data-theme-mode='night'] .municipal-home-root .text-slate-500,
+html[data-theme-mode='night'] .municipal-home-root .text-slate-400 {
+  color: rgba(226, 232, 240, 0.74) !important;
+}
+
+html[data-theme-mode='night'] .municipal-home-root .bg-white,
+html[data-theme-mode='night'] .municipal-home-root .bg-white\/92,
+html[data-theme-mode='night'] .municipal-home-root .bg-white\/80 {
+  background-color: rgba(11, 23, 37, 0.88) !important;
+}
+
+html[data-theme-mode='night'] .municipal-home-root .ring-black\/5,
+html[data-theme-mode='night'] .municipal-home-root .border-black\/5,
+html[data-theme-mode='night'] .municipal-home-root .border-slate-300,
+html[data-theme-mode='night'] .municipal-home-root .ring-slate-200\/70 {
+  border-color: rgba(148, 163, 184, 0.14) !important;
+  --tw-ring-color: rgba(148, 163, 184, 0.14) !important;
+}
+
+/* Hero parallax background strip — overrides inline backgroundImage in night mode */
+html[data-theme-mode='night'] .site-bg-gradient-strip {
+  background-image: linear-gradient(180deg, #07111b, #0b1725 46%, #102031) !important;
+}
+
+/* Standard footer — overrides inline backgroundImage (var(--site-background-gradient)) */
+html[data-theme-mode='night'] .site-bg-gradient-footer {
+  background: linear-gradient(180deg, #0b1725, #102031) !important;
+  border-color: rgba(148, 163, 184, 0.10) !important;
+}
+
+/* Light rgba(255,255,255) gradient backgrounds — ProceduresBlock, ProcedureWizard aside, tramites header */
+html[data-theme-mode='night'] [class*='bg-[linear-gradient(180deg,rgba(255,255,255'] {
+  background: rgba(11, 23, 37, 0.92) !important;
+}
+
+/* Light hex-white gradient backgrounds — HeroBlock quick links, ProcedureWizard buttons/uploads */
+html[data-theme-mode='night'] [class*='bg-[linear-gradient(180deg,_#ffffff'],
+html[data-theme-mode='night'] [class*='bg-[linear-gradient(180deg,#ffffff'] {
+  background: rgba(11, 23, 37, 0.92) !important;
+}
+
+/* Hero overlay for split/minimal variants (has inline style attribute) */
+html[data-theme-mode='night'] .hero-overlay[style] {
+  background: linear-gradient(135deg, rgba(7, 17, 38, 0.96), rgba(7, 17, 38, 0.60), rgba(7, 17, 38, 0.18)) !important;
+}
+
+/* Tramites page header panel */
+html[data-theme-mode='night'] .tramites-header-panel {
+  background: rgba(11, 23, 37, 0.92) !important;
+  border-color: rgba(148, 163, 184, 0.12) !important;
+}
+
+/* field-input night mode (ContactModal, ProcedureWizard inline inputs) */
+html[data-theme-mode='night'] .field-input {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border-color: rgba(148, 163, 184, 0.20) !important;
+  color: #e5edf5 !important;
+}
+html[data-theme-mode='night'] .field-input::placeholder {
+  color: rgba(148, 163, 184, 0.55) !important;
+}
+html[data-theme-mode='night'] .field-input:focus {
+  background: rgba(11, 23, 37, 0.95) !important;
+  border-color: #38bdf8 !important;
+}
+
+/* Global input placeholder tint in night mode */
+html[data-theme-mode='night'] input::placeholder,
+html[data-theme-mode='night'] textarea::placeholder {
+  color: rgba(148, 163, 184, 0.50) !important;
+}
+
+/* ProcedureWizard inline inputs (not field-input class) */
+html[data-theme-mode='night'] input.rounded-2xl,
+html[data-theme-mode='night'] textarea.rounded-\[1\.6rem\] {
+  background-color: rgba(15, 23, 42, 0.88) !important;
+  border-color: rgba(148, 163, 184, 0.20) !important;
+  color: #e5edf5 !important;
+}
+html[data-theme-mode='night'] input.rounded-2xl:focus,
+html[data-theme-mode='night'] textarea.rounded-\[1\.6rem\]:focus {
+  background-color: rgba(11, 23, 37, 0.95) !important;
+  border-color: #38bdf8 !important;
+}
+
+/* Emerald done-step items, success icons — soften in night mode */
+html[data-theme-mode='night'] [class*='bg-emerald-50'],
+html[data-theme-mode='night'] [class*='bg-emerald-100'] {
+  background-color: rgba(6, 78, 59, 0.30) !important;
+}
+html[data-theme-mode='night'] [class*='border-emerald-200'] {
+  border-color: rgba(52, 211, 153, 0.25) !important;
+}
+html[data-theme-mode='night'] [class*='text-emerald-900'],
+html[data-theme-mode='night'] [class*='text-emerald-700'] {
+  color: #a7f3d0 !important;
+}
+
+/* Amber / rose status banners — soften in night mode */
+html[data-theme-mode='night'] .border-amber-200.bg-amber-50 {
+  background: rgba(120, 53, 15, 0.22) !important;
+  border-color: rgba(217, 119, 6, 0.30) !important;
+  color: #fcd34d !important;
+}
+html[data-theme-mode='night'] .bg-rose-50 {
+  background: rgba(136, 19, 55, 0.18) !important;
+  color: #fca5a5 !important;
+}
+
+html[data-theme-mode='night'] .municipal-home-root .text-slate-700 {
+  color: rgba(226, 232, 240, 0.84) !important;
+}
+
+html[data-theme-mode='night'] .text-slate-950,
+html[data-theme-mode='night'] .text-slate-900,
+html[data-theme-mode='night'] .text-slate-800,
+html[data-theme-mode='night'] .text-slate-700,
+html[data-theme-mode='night'] .text-slate-600,
+html[data-theme-mode='night'] .text-slate-500,
+html[data-theme-mode='night'] .text-slate-400 {
+  color: #f8fafc !important;
+}
+
+html[data-theme-mode='night'] [class*='bg-white'] {
+  background-color: rgba(11, 23, 37, 0.88) !important;
+}
+
+html[data-theme-mode='night'] [class*='bg-slate-50'] {
+  background-color: rgba(15, 23, 42, 0.82) !important;
+}
+
+html[data-theme-mode='night'] [class*='bg-slate-100'] {
+  background-color: rgba(15, 23, 42, 0.86) !important;
+}
+
+html[data-theme-mode='night'] [class*='bg-white/'] {
+  background-color: rgba(11, 23, 37, 0.88) !important;
+}
+
+html[data-theme-mode='night'] [class*='border-slate-200'],
+html[data-theme-mode='night'] [class*='ring-slate-200'],
+html[data-theme-mode='night'] [class*='border-black/6'] {
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+
+html[data-theme-mode='night'] input,
+html[data-theme-mode='night'] textarea,
+html[data-theme-mode='night'] select,
+html[data-theme-mode='night'] button {
+  color: #e5edf5;
+}
+
+a { color: inherit; }
+a:hover { color: inherit; }
+
+/* ── Event modal card ───────────────────────────────────────── */
+.municipal-event-cover-overlay {
+  background: linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.68) 40%, rgba(255,255,255,0.95) 100%);
+}
+html[data-theme-mode='night'] .municipal-event-cover-overlay {
+  background: linear-gradient(180deg, rgba(11,23,37,0.82) 0%, rgba(11,23,37,0.74) 40%, rgba(11,23,37,0.94) 100%) !important;
+}
+
+.municipal-event-modal {
+  background: #ffffff;
+}
+.municipal-event-modal-body {
+  background: #ffffff;
+}
+.municipal-modal-text {
+  color: #1e293b;
+}
+.municipal-modal-close-btn {
+  border-color: #e2e8f0;
+  color: #475569;
+}
+
+html[data-theme-mode='night'] .municipal-event-modal,
+html[data-theme-mode='night'] .municipal-event-modal-body {
+  background: #0b1725 !important;
+  color: #e5edf5 !important;
+}
+html[data-theme-mode='night'] .municipal-modal-text {
+  color: #e5edf5 !important;
+}
+html[data-theme-mode='night'] .municipal-modal-close-btn {
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  color: #e2e8f0 !important;
+}
+html[data-theme-mode='night'] .municipal-mas-info-btn {
+  background: rgba(11, 23, 37, 0.6) !important;
+}
+
+.muni-btn-primary {
+  background-color: var(--municipality-primary);
+  color: white;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color .2s ease;
+}
+.muni-btn-primary:hover { background-color: var(--municipality-secondary); }
+
+/* ============================================================
+   TRANSPARENCIA — dark mode overrides
+   ============================================================ */
+
+/* Day-mode base for transparency icon containers */
+.tr-icon-bg {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+.tr-icon-color {
+  color: var(--municipality-primary);
+}
+
+html[data-theme-mode='night'] .transparency-root .tr-heading-color {
+  color: #f1f5f9 !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-text-muted {
+  color: rgba(203, 213, 225, 0.75) !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-text-body {
+  color: rgba(226, 232, 240, 0.85) !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-accordion-item {
+  background-color: rgba(11, 23, 37, 0.84) !important;
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-accordion-item:hover {
+  box-shadow: 0 8px 30px rgba(2, 6, 23, 0.32) !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-icon-bg {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-icon-color {
+  color: rgba(203, 213, 225, 0.80);
+}
+html[data-theme-mode='night'] .transparency-root .tr-divider {
+  border-color: rgba(148, 163, 184, 0.10) !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-divider-line {
+  background-color: rgba(148, 163, 184, 0.15) !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-chip {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(148, 163, 184, 0.14) !important;
+  color: rgba(203, 213, 225, 0.80) !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-note {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(148, 163, 184, 0.12) !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-form-panel {
+  background-color: rgba(11, 23, 37, 0.84) !important;
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-link-color {
+  color: rgba(125, 211, 252, 0.90) !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-info-box {
+  background-color: rgba(14, 30, 58, 0.72) !important;
+  border-color: rgba(96, 165, 250, 0.18) !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-info-label {
+  color: rgba(147, 197, 253, 0.85) !important;
+}
+html[data-theme-mode='night'] .transparency-root .tr-info-text {
+  color: rgba(186, 214, 253, 0.80) !important;
+}
+/* Form inputs in night mode */
+html[data-theme-mode='night'] .transparency-root input:not([type='checkbox']),
+html[data-theme-mode='night'] .transparency-root select,
+html[data-theme-mode='night'] .transparency-root textarea {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  color: #e5edf5 !important;
+}
+html[data-theme-mode='night'] .transparency-root input::placeholder,
+html[data-theme-mode='night'] .transparency-root textarea::placeholder {
+  color: rgba(148, 163, 184, 0.55) !important;
+}
+html[data-theme-mode='night'] .transparency-root select option {
+  background-color: #0b1725;
+  color: #e5edf5;
+}
+html[data-theme-mode='night'] .transparency-root label {
+  color: rgba(203, 213, 225, 0.88) !important;
+}
+/* Terms checkbox row */
+html[data-theme-mode='night'] .transparency-root .rounded-xl.border.border-slate-200.bg-slate-50\/80 {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+/* Success panel */
+html[data-theme-mode='night'] .transparency-root .rounded-2xl.border-green-200 {
+  background-color: rgba(6, 30, 18, 0.80) !important;
+  border-color: rgba(52, 211, 153, 0.22) !important;
+}
+html[data-theme-mode='night'] .transparency-root .text-green-800,
+html[data-theme-mode='night'] .transparency-root .text-green-700 {
+  color: rgba(110, 231, 183, 0.90) !important;
+}
+/* Reset button */
+html[data-theme-mode='night'] .transparency-root button[type='button'].border-slate-300 {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(148, 163, 184, 0.22) !important;
+  color: #e5edf5 !important;
+}
+
+.muni-card { background: white; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,.06); border: 1px solid #e2e8f0; }
+
+.municipality-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  background: color-mix(in srgb, var(--municipality-secondary) 92%, black 8%);
+  color: white;
+  box-shadow: 0 16px 44px rgba(15, 23, 42, 0.14);
+}
+
+.municipality-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+}
+
+/* ─── Contact modal form fields ────────────────────────────────── */
+.field-input {
+  width: 100%;
+  border-radius: 0.9rem;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 0.72rem 1rem;
+  font-size: 0.9rem;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+.field-input::placeholder { color: #94a3b8; }
+.field-input:focus {
+  border-color: #38bdf8;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+
+.municipality-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: max-content;
+  color: white;
+  font-weight: 900;
+}
+
+.municipality-header__brand img {
+  width: 2.65rem;
+  height: 2.65rem;
+  object-fit: contain;
+}
+
+.municipality-header__nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 0.86rem;
+}
+
+.municipality-header__nav a {
+  padding: 0.45rem 0.65rem;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.82);
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.municipality-header__nav a:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.municipality-footer {
+  margin-top: 5rem;
+  background: #102a2d;
+  color: white;
+}
+
+.news-detail-shell {
+  transition: background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.news-rich-content {
+  color: #1e293b;
+}
+
+.news-rich-content h1,
+.news-rich-content h2,
+.news-rich-content h3,
+.news-rich-content h4 {
+  color: #0f172a;
+  font-family: var(--site-font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-top: 1.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.news-rich-content h1 {
+  font-size: clamp(2rem, 3vw, 3rem);
+}
+
+.news-rich-content h2 {
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+}
+
+.news-rich-content h3 {
+  font-size: clamp(1.3rem, 2vw, 1.8rem);
+}
+
+.news-rich-content p,
+.news-rich-content li {
+  font-size: 1.02rem;
+  line-height: 1.95;
+  color: #475569;
+}
+
+.news-rich-content p + p,
+.news-rich-content ul,
+.news-rich-content ol,
+.news-rich-content blockquote,
+.news-rich-content img,
+.news-rich-content hr {
+  margin-top: 1.2rem;
+}
+
+.news-rich-content a {
+  color: var(--site-secondary);
+  text-decoration: underline;
+  text-underline-offset: 0.24em;
+}
+
+.news-rich-content ul,
+.news-rich-content ol {
+  padding-left: 1.4rem;
+}
+
+.news-rich-content blockquote {
+  border-left: 4px solid color-mix(in srgb, var(--site-secondary) 26%, white);
+  padding-left: 1rem;
+  color: #334155;
+}
+
+.news-rich-content img {
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+
+html[data-theme-mode='night'] .news-detail-shell {
+  border-color: rgba(148, 163, 184, 0.12);
+  background: rgba(11, 23, 37, 0.86);
+  box-shadow: 0 34px 80px rgba(2, 6, 23, 0.38);
+}
+
+html[data-theme-mode='night'] .news-rich-content {
+  background: rgba(15, 23, 42, 0.74) !important;
+  color: #e2e8f0;
+}
+
+html[data-theme-mode='night'] .news-rich-content h1,
+html[data-theme-mode='night'] .news-rich-content h2,
+html[data-theme-mode='night'] .news-rich-content h3,
+html[data-theme-mode='night'] .news-rich-content h4 {
+  color: #f8fafc;
+}
+
+html[data-theme-mode='night'] .news-rich-content p,
+html[data-theme-mode='night'] .news-rich-content li,
+html[data-theme-mode='night'] .news-rich-content blockquote {
+  color: rgba(226, 232, 240, 0.8);
+}
+
+.municipality-footer__inner {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2.25rem 1rem;
+  font-size: 0.92rem;
+}
+
+.municipality-footer__inner a {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.municipality-footer__inner a:hover {
+  color: white;
+}
+
+.municipality-footer__bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.85rem 1rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.82rem;
+}
+
+.municipal-home-shell {
+  display: grid;
+  gap: clamp(2.25rem, 5vw, 4.5rem);
+  padding-block: clamp(2.5rem, 6vw, 5.5rem);
+}
+
+.municipal-hero-simple {
+  position: relative;
+  min-height: 25rem;
+  overflow: hidden;
+  background: #0b1f26;
+}
+
+.municipal-hero-simple > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.municipal-hero-simple > div:first-of-type {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 32, 38, 0.18), rgba(6, 32, 38, 0.76));
+}
+
+.municipal-hero-simple > div:last-of-type {
+  position: relative;
+  z-index: 1;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 12rem 1rem 3rem;
+  color: white;
+}
+
+.municipal-hero-simple h1 {
+  max-width: 14ch;
+  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  line-height: 0.95;
+  font-weight: 900;
+}
+
+.municipal-hero-simple p {
+  max-width: 44rem;
+  margin-top: 1rem;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.batlle-hero {
+  position: relative;
+  min-height: min(780px, 92vh);
+  overflow: hidden;
+  isolation: isolate;
+  background: #061f24;
+  color: white;
+}
+
+.batlle-hero__image,
+.batlle-hero__canvas,
+.batlle-hero__veil {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.batlle-hero__image {
+  object-fit: cover;
+  opacity: 0.58;
+  filter: saturate(1.08) contrast(1.06);
+}
+
+.batlle-hero__veil {
+  z-index: 1;
+  background:
+    radial-gradient(circle at 72% 22%, rgba(255, 210, 102, 0.28), transparent 24rem),
+    linear-gradient(90deg, rgba(6, 31, 36, 0.94) 0%, rgba(6, 31, 36, 0.68) 42%, rgba(6, 31, 36, 0.28) 100%),
+    linear-gradient(0deg, rgba(6, 31, 36, 0.9), transparent 38%);
+}
+
+.batlle-hero__canvas {
+  z-index: 2;
+  left: auto;
+  width: min(58vw, 55rem);
+  opacity: 0.94;
+}
+
+.batlle-hero__content {
+  position: relative;
+  z-index: 3;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: clamp(8rem, 14vw, 12rem) 1rem 10rem;
+}
+
+.batlle-hero__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.85rem;
+  font-weight: 700;
+  backdrop-filter: blur(16px);
+}
+
+.batlle-hero__brand img {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.batlle-hero h1 {
+  max-width: 11ch;
+  margin-top: 1.4rem;
+  font-size: clamp(3.4rem, 9.5vw, 9rem);
+  line-height: 0.88;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.batlle-hero__content > p {
+  max-width: 42rem;
+  margin-top: 1.4rem;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: clamp(1.05rem, 2.2vw, 1.5rem);
+  line-height: 1.6;
+}
+
+.batlle-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 2rem;
+}
+
+.batlle-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  font-weight: 800;
+  backdrop-filter: blur(16px);
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.batlle-action:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.batlle-action--primary {
+  border-color: transparent;
+  background: #ffd166;
+  color: #062026;
+}
+
+.batlle-action--primary:hover {
+  background: #ffe08a;
+}
+
+.batlle-hero__panel {
+  position: absolute;
+  right: max(1rem, calc((100vw - 72rem) / 2));
+  bottom: 2rem;
+  z-index: 4;
+  display: grid;
+  gap: 0.75rem;
+  width: min(26rem, calc(100% - 2rem));
+}
+
+.batlle-hero__panel > div {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 0.5rem;
+  background: rgba(6, 31, 36, 0.62);
+  color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(18px);
+}
+
+.batlle-intro-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.batlle-copy-block {
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border-radius: 0.5rem;
+  background: #f7efe1;
+  color: #102a2d;
+}
+
+.batlle-copy-block span {
+  color: #0b7285;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.batlle-copy-block h2 {
+  max-width: 14ch;
+  margin-top: 0.7rem;
+  font-size: clamp(2rem, 5vw, 4.25rem);
+  line-height: 0.95;
+  font-weight: 950;
+}
+
+.batlle-copy-block p {
+  max-width: 62rem;
+  margin-top: 1.25rem;
+  color: rgba(16, 42, 45, 0.78);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.batlle-metrics {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.batlle-metrics div,
+.meeting-list li,
+.authority-grid > div {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+}
+
+.batlle-metrics div {
+  padding: 1.2rem;
+}
+
+.batlle-metrics strong {
+  display: block;
+  color: #0b7285;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1;
+}
+
+.batlle-metrics span {
+  display: block;
+  margin-top: 0.45rem;
+  color: rgba(15, 23, 42, 0.74);
+  font-size: 0.92rem;
+}
+
+.quick-link-band {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 0.5rem;
+  background: #102a2d;
+}
+
+.quick-link-band a {
+  min-height: 8.5rem;
+  padding: 1.25rem;
+  color: white;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.quick-link-band a:last-child { border-right: 0; }
+
+.quick-link-band a:hover {
+  background: rgba(255, 209, 102, 0.15);
+  transform: translateY(-2px);
+}
+
+.quick-link-band span {
+  display: block;
+  font-weight: 900;
+  font-size: 1.12rem;
+}
+
+.quick-link-band small {
+  display: block;
+  margin-top: 0.7rem;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.5;
+}
+
+.batlle-feature-grid > div:last-child,
+.content-card-grid,
+.authority-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.batlle-feature-grid article {
+  min-height: 14rem;
+  padding: 1.35rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(145deg, #0b7285, #2f9e44);
+  color: white;
+}
+
+.batlle-feature-grid article:nth-child(2) { background: linear-gradient(145deg, #2f9e44, #f08c00); }
+.batlle-feature-grid article:nth-child(3) { background: linear-gradient(145deg, #102a2d, #0b7285); }
+
+.batlle-feature-grid h3 {
+  font-size: 1.3rem;
+  line-height: 1.15;
+  font-weight: 900;
+}
+
+.batlle-feature-grid p {
+  margin-top: 0.8rem;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.65;
+}
+
+.batlle-gallery {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  grid-auto-rows: minmax(13rem, 19vw);
+  gap: 0.85rem;
+}
+
+.batlle-gallery figure {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: #dbe4d7;
+}
+
+.batlle-gallery figure.is-large { grid-row: span 2; }
+
+.batlle-gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 500ms ease;
+}
+
+.batlle-gallery figure:hover img { transform: scale(1.04); }
+
+.batlle-gallery figcaption {
+  position: absolute;
+  left: 0.85rem;
+  right: 0.85rem;
+  bottom: 0.85rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.45rem;
+  background: rgba(6, 31, 36, 0.72);
+  color: white;
+  font-size: 0.84rem;
+  backdrop-filter: blur(12px);
+}
+
+.content-card-grid > a,
+.meeting-list li,
+.authority-grid > div {
+  overflow: hidden;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  border-radius: 0.5rem !important;
+}
+
+.content-card-grid > a {
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+}
+
+.content-card-grid > a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 26px 60px rgba(15, 23, 42, 0.12);
+}
+
+.text-link-strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--municipality-primary);
+  font-weight: 900;
+}
+
+.text-link-strong::after {
+  content: "";
+  width: 1.45rem;
+  height: 1px;
+  background: currentColor;
+}
+
+.meeting-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.meeting-list li {
+  padding: 1rem;
+}
+
+.authority-grid > div {
+  padding: 1.1rem;
+  text-align: center;
+}
+
+.authority-grid img {
+  width: 6rem;
+  height: 6rem;
+  margin: 0 auto 0.75rem;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+@media (max-width: 900px) {
+  .batlle-hero { min-height: 760px; }
+  .batlle-hero__canvas {
+    inset: auto 0 5rem auto;
+    width: 100%;
+    height: 40%;
+    opacity: 0.72;
+  }
+  .batlle-hero__panel { position: relative; right: auto; bottom: auto; z-index: 5; margin: -7rem 1rem 2rem; }
+  .batlle-intro-grid,
+  .batlle-gallery { grid-template-columns: 1fr; }
+  .quick-link-band,
+  .batlle-feature-grid > div:last-child,
+  .content-card-grid,
+  .authority-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .quick-link-band a:nth-child(2n) { border-right: 0; }
+  .batlle-gallery figure.is-large { grid-row: span 1; }
+}
+
+@media (max-width: 620px) {
+  .batlle-hero h1 { font-size: clamp(3rem, 18vw, 5rem); }
+  .batlle-hero__content { padding-top: 7rem; }
+  .batlle-action { width: 100%; }
+  .quick-link-band,
+  .batlle-feature-grid > div:last-child,
+  .content-card-grid,
+  .authority-grid { grid-template-columns: 1fr; }
+  .quick-link-band a { border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+  .quick-link-band a:last-child { border-bottom: 0; }
+}

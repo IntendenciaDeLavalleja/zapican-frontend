@@ -1,0 +1,63 @@
+---
+import SiteLayout from '@/layouts/SiteLayout.astro';
+import TransparencyForm from '@/components/islands/TransparencyForm';
+import { siteApi } from '@/lib/api';
+import type { SitePublic, ThemePublic, PageBlockPublic } from '@/lib/api/types';
+import { sanitizePageBlocks } from '@/lib/utils';
+
+let site: SitePublic | null = null;
+let theme: ThemePublic | null = null;
+let navBlock: PageBlockPublic | undefined;
+
+try {
+  const [configResp, blocksResp] = await Promise.all([
+    siteApi.config(),
+    siteApi.blocks('home'),
+  ]);
+  site = configResp.site;
+  theme = configResp.theme;
+  const blocks = sanitizePageBlocks(blocksResp.blocks || []);
+  navBlock = blocks.find((b) => b.block_type === 'navigation');
+} catch {
+  // handled below
+}
+
+const municipalityName = site?.name ?? 'el Municipio';
+---
+
+{site ? (
+  <SiteLayout
+    site={site}
+    theme={theme}
+    navBlock={navBlock}
+    title={`Acceso a la Información Pública — ${site.name}`}
+    description="Formulario de solicitud de acceso a la información pública."
+  >
+    <div class="mx-auto max-w-4xl space-y-10 transparency-root py-8">
+
+      <!-- ── ENCABEZADO ── -->
+      <section class="relative overflow-hidden rounded-[2rem] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.78))] municipal-panel-light p-8 shadow-[0_24px_60px_rgba(15,23,42,0.09)] backdrop-blur-xl sm:p-10 text-center">
+        <p class="text-[0.7rem] font-bold uppercase tracking-[0.3em] text-slate-400 mb-3">Gobierno Abierto</p>
+        <h1 class="text-3xl font-black tracking-tighter sm:text-4xl text-slate-900 tr-heading-color">
+          Solicitud - Acceso a la información pública
+        </h1>
+        <p class="mt-4 text-base text-slate-600 tr-text-muted mx-auto max-w-2xl">
+          Complete el siguiente formulario para realizar una solicitud de acceso a la información pública amparada en la <strong>Ley N.º 18.381</strong>.
+        </p>
+      </section>
+
+      <!-- ── FORMULARIO ── -->
+      <section>
+        <div class="rounded-2xl border border-slate-200/80 bg-white/80 municipal-panel-light p-6 shadow-sm sm:p-8 tr-form-panel">
+          <TransparencyForm client:load municipalityName={municipalityName} />
+        </div>
+      </section>
+
+    </div>
+  </SiteLayout>
+) : (
+  <div style="font-family: sans-serif; padding: 2rem; border-bottom: 2px solid red; background: #fff5f5; color: #800; text-align: center;">
+    <p style="font-weight: bold;">No se pudo cargar la sección de Transparencia.</p>
+  </div>
+)}
+

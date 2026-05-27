@@ -1,0 +1,14 @@
+---
+export interface Props {
+  title: string;
+  subtitle?: string;
+  align?: 'left' | 'center';
+  className?: string;
+}
+const { title, subtitle, align = 'left', className = '' } = Astro.props;
+const alignClass = align === 'center' ? 'text-center' : 'text-left';
+---
+<div class={`mb-6 ${alignClass} ${className}`}>
+  <h2 class="text-2xl md:text-3xl font-bold" style="color: var(--municipality-secondary);">{title}</h2>
+  {subtitle && <p class="mt-1 text-base opacity-80">{subtitle}</p>}
+</div>
