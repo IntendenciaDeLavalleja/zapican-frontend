@@ -2,48 +2,14 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import MunicipalHomeExperience from '@/components/islands/MunicipalHomeExperience';
 import { DEFAULT_SITE, DEFAULT_THEME } from '@/lib/defaults';
+import { serializeThemeStyleBlock } from '@/lib/theme';
 
 const site = DEFAULT_SITE;
 const theme = DEFAULT_THEME;
-
-const fontFamilies = {
-    inter: {
-        body: "'Plus Jakarta Sans', system-ui, sans-serif",
-        display: "'Barlow', 'Plus Jakarta Sans', system-ui, sans-serif",
-    },
-    lora: {
-        body: "'Lora', Georgia, serif",
-        display: "'Lora', Georgia, serif",
-    },
-    merriweather: {
-        body: "'Merriweather', Georgia, serif",
-        display: "'Merriweather', Georgia, serif",
-    },
-    system: {
-        body: "system-ui, -apple-system, sans-serif",
-        display: "system-ui, -apple-system, sans-serif",
-    },
-} as const;
-
-const fontPreset = fontFamilies[(theme?.font_style as keyof typeof fontFamilies) || 'inter'] || fontFamilies.inter;
 ---
 
 <BaseLayout title={site.name} description={site.short_description}>
-    <style is:inline set:html={`:root {
-        --site-primary: ${theme.colors.primary};
-        --site-secondary: ${theme.colors.secondary};
-        --site-accent: ${theme.colors.accent};
-        --site-background: ${theme.colors.background};
-        --site-text: ${theme.colors.text};
-        --municipality-primary: ${theme.colors.primary};
-        --municipality-secondary: ${theme.colors.secondary};
-        --municipality-accent: ${theme.colors.accent};
-        --municipality-background: ${theme.colors.background};
-        --municipality-text: ${theme.colors.text};
-        --site-background-gradient: linear-gradient(${theme.background_gradient.angle}deg, ${theme.background_gradient.from}, ${theme.background_gradient.to});
-        --site-font-body: ${fontPreset.body};
-        --site-font-display: ${fontPreset.display};
-    }`}></style>
+    <style is:inline set:html={serializeThemeStyleBlock(theme)}></style>
     <MunicipalHomeExperience
         client:load
         site={site}

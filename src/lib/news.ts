@@ -8,7 +8,7 @@ type NewsTransitionNames = {
 };
 
 export function getNewsHref(slug: string) {
-  return `/novedades/${slug}`;
+  return `/novedades?articulo=${encodeURIComponent(slug)}`;
 }
 
 export function getNewsTransitionNames(slug: string): NewsTransitionNames {

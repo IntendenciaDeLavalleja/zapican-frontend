@@ -141,7 +141,9 @@ export default function HeroBlock({ site, theme, news, events, heroBlock, quickL
       <motion.div style={{ y: heroBgY, backgroundImage: 'var(--site-background-gradient)' }} className="site-bg-gradient-strip absolute inset-x-0 top-0 -z-10 h-160" />
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 lg:grid-cols-[1.35fr_0.85fr] lg:items-stretch lg:gap-12">
         <motion.section {...sectionMotion} className={heroShellClass}>
-          <motion.img src={site.hero_url || ''} alt={site.name} style={{ y: heroImgY, opacity: isHeroSplit ? 0.9 : isHeroMinimal ? 0.22 : 0.7, width: isHeroSplit ? '54%' : '100%', left: isHeroSplit ? '46%' : 0 }} className="absolute inset-y-0 h-full object-cover scale-110" />
+          {site.hero_url ? (
+            <motion.img src={site.hero_url} alt={site.name} style={{ y: heroImgY, opacity: isHeroSplit ? 0.9 : isHeroMinimal ? 0.22 : 0.7, width: isHeroSplit ? '54%' : '100%', left: isHeroSplit ? '46%' : 0 }} className="absolute inset-y-0 h-full object-cover scale-110" />
+          ) : null}
           <div className={`${heroOverlayClass} hero-overlay`} style={heroOverlayStyle} />
           <div className={`relative flex ${heroMinHeightClass} flex-col justify-between p-6 sm:p-8 lg:p-10`}>
             <div className="flex flex-wrap items-start justify-between gap-4">
@@ -495,7 +497,7 @@ export default function HeroBlock({ site, theme, news, events, heroBlock, quickL
                     Cerrar
                   </button>
                   <a
-                    href={`/eventos/${currentEvent.slug}`}
+                    href={`/eventos?evento=${encodeURIComponent(currentEvent.slug)}`}
                     className="flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
                     style={{ background: 'linear-gradient(135deg, var(--site-primary, #1e3a8a), var(--site-secondary, #0ea5e9))' }}
                   >

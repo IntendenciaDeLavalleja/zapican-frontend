@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import MunicipalNavbar from '@/components/common/Navbar';
 import MunicipalFooter from '@/components/common/Footer';
 import type { SitePublic, ThemePublic, PageBlockPublic } from '@/lib/api/types';
+import { resolveTheme, serializeThemeStyleBlock } from '@/lib/theme';
 
 export interface Props {
   site: SitePublic;
@@ -14,69 +15,20 @@ export interface Props {
 }
 
 const { site, theme, navBlock, title, description, ogImage } = Astro.props;
-
-const fontFamilies = {
-  inter: {
-    body: "'Plus Jakarta Sans', system-ui, sans-serif",
-    display: "'Barlow', 'Plus Jakarta Sans', system-ui, sans-serif",
-  },
-  lora: {
-    body: "'Lora', Georgia, serif",
-    display: "'Lora', Georgia, serif",
-  },
-  merriweather: {
-    body: "'Merriweather', Georgia, serif",
-    display: "'Merriweather', Georgia, serif",
-  },
-  system: {
-    body: 'system-ui, -apple-system, sans-serif',
-    display: 'system-ui, -apple-system, sans-serif',
-  },
-} as const;
-
-const fontPreset = fontFamilies[(theme?.font_style as keyof typeof fontFamilies) || 'inter'] || fontFamilies.inter;
-
-const colors = theme?.colors ?? {
-  primary: '#1f6feb',
-  secondary: '#0b3b6f',
-  accent: '#f59e0b',
-  background: '#ffffff',
-  text: '#0f172a',
-};
-const backgroundGradient = theme?.background_gradient ?? {
-  from: colors.background,
-  to: colors.background,
-  angle: 180,
-};
-const customCss = theme?.custom_css ?? '';
+const resolvedTheme = resolveTheme(theme);
 
 const finalTitle = title ?? site.name;
 const finalDescription = description ?? site.short_description ?? site.seo?.description ?? '';
 const finalOg = ogImage ?? site.seo?.og_image ?? site.hero_url ?? null;
 ---
 <BaseLayout title={finalTitle} description={finalDescription} ogImage={finalOg}>
-  <style is:inline set:html={`:root {
-    --site-primary: ${colors.primary};
-    --site-secondary: ${colors.secondary};
-    --site-accent: ${colors.accent};
-    --site-background: ${colors.background};
-    --site-text: ${colors.text};
-    --municipality-primary: ${colors.primary};
-    --municipality-secondary: ${colors.secondary};
-    --municipality-accent: ${colors.accent};
-    --municipality-background: ${colors.background};
-    --municipality-text: ${colors.text};
-    --site-background-gradient: linear-gradient(${backgroundGradient.angle}deg, ${backgroundGradient.from}, ${backgroundGradient.to});
-    --site-font-body: ${fontPreset.body};
-    --site-font-display: ${fontPreset.display};
-  }
-  ${customCss}`}></style>
+  <style is:inline set:html={serializeThemeStyleBlock(resolvedTheme)}></style>
 
   <div class="municipal-home-root relative min-h-screen">
-    <MunicipalNavbar client:load site={site} navBlock={navBlock} theme={theme} enableNightMode={true} />
+    <MunicipalNavbar client:load site={site} navBlock={navBlock} theme={resolvedTheme} enableNightMode={true} />
     <main style="background: var(--site-background-gradient); color: var(--site-text); min-height: 60vh;" class="px-4 pb-20 pt-28 lg:px-8">
       <slot />
     </main>
-    <MunicipalFooter client:load site={site} navBlock={navBlock} theme={theme} />
+    <MunicipalFooter client:load site={site} navBlock={navBlock} theme={resolvedTheme} />
   </div>
 </BaseLayout>

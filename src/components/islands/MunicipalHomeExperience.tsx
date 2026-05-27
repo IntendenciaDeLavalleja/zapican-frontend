@@ -10,6 +10,7 @@ import NewsEventsBlock from '@/components/blocks/NewsEventsBlock';
 import AuthoritiesBlock from '@/components/blocks/AuthoritiesBlock';
 import ContactBlock from '@/components/blocks/ContactBlock';
 import { authoritiesApi, agendaApi, eventsApi, meetingsApi, newsApi, proceduresApi, siteApi } from '@/lib/api';
+import { syncThemeDocument } from '@/lib/theme';
 import { repairApiPayload, sanitizePageBlocks, sanitizeProcedureTypes } from '@/lib/utils';
 import type {
   AuthorityPublic,
@@ -72,6 +73,10 @@ export default function MunicipalHomeExperience({ site, theme, enableNightMode, 
       })
       .catch(() => { /* mantiene los datos del build si la API no responde */ });
   }, []);
+
+  useEffect(() => {
+    syncThemeDocument(currentTheme);
+  }, [currentTheme]);
 
   const getBlock = (type: string) => blocks.find((b) => b.block_type === type);
   const cardStyle = currentTheme?.card_style ?? 'soft';
