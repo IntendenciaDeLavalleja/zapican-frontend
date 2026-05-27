@@ -35,6 +35,7 @@ function avatarUrl(name: string) {
 
 function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; onClose: () => void }) {
   const [bioExpanded, setBioExpanded] = useState(false);
+  const [isNightMode, setIsNightMode] = useState(false);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -45,6 +46,18 @@ function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; on
       document.body.style.overflow = '';
     };
   }, [onClose]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const syncTheme = () => setIsNightMode(root.dataset.themeMode === 'night');
+
+    syncTheme();
+
+    const observer = new MutationObserver(syncTheme);
+    observer.observe(root, { attributes: true, attributeFilter: ['data-theme-mode'] });
+
+    return () => observer.disconnect();
+  }, []);
 
   const hasSocial = authority.facebook_url || authority.twitter_url || authority.linkedin_url;
   const hasContact = authority.email || authority.phone;
@@ -100,11 +113,15 @@ function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; on
             <motion.div
               layout
               animate={{
-                backgroundColor: bioExpanded ? 'rgba(255,255,255,0.94)' : 'rgba(255,255,255,0.10)',
-                borderColor: bioExpanded ? 'rgba(255,255,255,0.40)' : 'rgba(255,255,255,0.10)',
+                backgroundColor: bioExpanded
+                  ? (isNightMode ? 'rgba(8,15,27,0.94)' : 'rgba(255,255,255,0.94)')
+                  : (isNightMode ? 'rgba(8,15,27,0.42)' : 'rgba(255,255,255,0.10)'),
+                borderColor: bioExpanded
+                  ? (isNightMode ? 'rgba(148,163,184,0.18)' : 'rgba(255,255,255,0.40)')
+                  : (isNightMode ? 'rgba(148,163,184,0.14)' : 'rgba(255,255,255,0.10)'),
                 boxShadow: bioExpanded
-                  ? '0 30px 70px rgba(15,23,42,0.2)'
-                  : '0 14px 30px rgba(15,23,42,0.08)',
+                  ? (isNightMode ? '0 30px 70px rgba(2,6,23,0.5)' : '0 30px 70px rgba(15,23,42,0.2)')
+                  : (isNightMode ? '0 14px 30px rgba(2,6,23,0.24)' : '0 14px 30px rgba(15,23,42,0.08)'),
                 backdropFilter: bioExpanded ? 'blur(16px)' : 'blur(4px)',
               }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
@@ -116,7 +133,7 @@ function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; on
                   onClick={() => setBioExpanded((current) => !current)}
                   aria-expanded={bioExpanded}
                   aria-label={bioExpanded ? 'Ocultar biografia' : 'Mostrar biografia'}
-                  className="absolute left-1/2 top-0 z-10 flex h-11 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/92 text-slate-500 shadow-[0_12px_24px_rgba(15,23,42,0.16)] transition hover:-translate-y-[55%] hover:text-slate-700"
+                  className={`absolute left-1/2 top-0 z-10 flex h-11 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border shadow-[0_12px_24px_rgba(15,23,42,0.16)] transition hover:-translate-y-[55%] ${isNightMode ? 'border-slate-700/80 bg-slate-900/92 text-slate-200 hover:text-white' : 'border-white/70 bg-white/92 text-slate-500 hover:text-slate-700'}`}
                 >
                   <motion.span
                     animate={{ rotate: bioExpanded ? 180 : 0 }}
@@ -128,8 +145,8 @@ function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; on
               )}
 
               <div className="px-6 pb-5 pt-6">
-                <h2 className="text-xl font-bold leading-snug text-slate-900">{authority.name}</h2>
-                <p className="mt-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-[#0d3b66]">
+                <h2 className={`text-xl font-bold leading-snug ${isNightMode ? 'text-slate-50' : 'text-slate-900'}`}>{authority.name}</h2>
+                <p className={`mt-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.32em] ${isNightMode ? 'text-sky-300' : 'text-[#0d3b66]'}`}>
                   {authority.role}
                 </p>
               </div>
@@ -142,11 +159,11 @@ function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; on
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-                    className="overflow-hidden border-t border-slate-200/80"
+                    className={`overflow-hidden border-t ${isNightMode ? 'border-slate-800/90' : 'border-slate-200/80'}`}
                   >
                     <div className="max-h-[38vh] space-y-5 overflow-y-auto px-6 py-5">
                       {authority.bio && (
-                        <p className="text-sm leading-7 text-slate-600">{authority.bio}</p>
+                        <p className={`text-sm leading-7 ${isNightMode ? 'text-slate-200' : 'text-slate-600'}`}>{authority.bio}</p>
                       )}
 
                       {hasContact && (
@@ -154,18 +171,18 @@ function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; on
                           {authority.email && (
                             <a
                               href={`mailto:${authority.email}`}
-                              className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100"
+                              className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-sm transition ${isNightMode ? 'border-slate-800 bg-slate-900/80 text-slate-100 hover:bg-slate-800/90' : 'border-slate-100 bg-slate-50 text-slate-700 hover:bg-slate-100'}`}
                             >
-                              <Mail className="h-4 w-4 shrink-0 text-slate-400" />
+                              <Mail className={`h-4 w-4 shrink-0 ${isNightMode ? 'text-slate-400' : 'text-slate-400'}`} />
                               <span className="truncate">{authority.email}</span>
                             </a>
                           )}
                           {authority.phone && (
                             <a
                               href={`tel:${authority.phone}`}
-                              className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100"
+                              className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-sm transition ${isNightMode ? 'border-slate-800 bg-slate-900/80 text-slate-100 hover:bg-slate-800/90' : 'border-slate-100 bg-slate-50 text-slate-700 hover:bg-slate-100'}`}
                             >
-                              <Phone className="h-4 w-4 shrink-0 text-slate-400" />
+                              <Phone className={`h-4 w-4 shrink-0 ${isNightMode ? 'text-slate-400' : 'text-slate-400'}`} />
                               <span>{authority.phone}</span>
                             </a>
                           )}
@@ -180,7 +197,7 @@ function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; on
                               target="_blank"
                               rel="noopener noreferrer"
                               aria-label="Facebook"
-                              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600"
+                              className={`flex h-10 w-10 items-center justify-center rounded-full border transition ${isNightMode ? 'border-slate-700 text-slate-300 hover:border-sky-500 hover:bg-sky-500/10 hover:text-sky-300' : 'border-slate-200 text-slate-500 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600'}`}
                             >
                               <Facebook className="h-4 w-4" />
                             </a>
@@ -191,7 +208,7 @@ function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; on
                               target="_blank"
                               rel="noopener noreferrer"
                               aria-label="Twitter / X"
-                              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-800"
+                              className={`flex h-10 w-10 items-center justify-center rounded-full border transition ${isNightMode ? 'border-slate-700 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-white' : 'border-slate-200 text-slate-500 hover:border-slate-400 hover:bg-slate-50 hover:text-slate-800'}`}
                             >
                               <Twitter className="h-4 w-4" />
                             </a>
@@ -202,7 +219,7 @@ function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; on
                               target="_blank"
                               rel="noopener noreferrer"
                               aria-label="LinkedIn"
-                              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700"
+                              className={`flex h-10 w-10 items-center justify-center rounded-full border transition ${isNightMode ? 'border-slate-700 text-slate-300 hover:border-sky-500 hover:bg-sky-500/10 hover:text-sky-300' : 'border-slate-200 text-slate-500 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700'}`}
                             >
                               <Linkedin className="h-4 w-4" />
                             </a>
@@ -215,7 +232,7 @@ function AuthorityModal({ authority, onClose }: { authority: AuthorityPublic; on
               </AnimatePresence>
 
               {!hasExtra && (
-                <p className="border-t border-slate-100 px-6 py-5 text-center text-sm italic text-slate-400">
+                <p className={`border-t px-6 py-5 text-center text-sm italic ${isNightMode ? 'border-slate-800/90 text-slate-400' : 'border-slate-100 text-slate-400'}`}>
                   Sin informacion adicional disponible.
                 </p>
               )}

@@ -183,12 +183,15 @@ export default function MunicipalNavbar({ site, navBlock, theme, enableNightMode
   }, [enableNightMode, themeMode]);
 
   const logoSrc = resolveSiteLogoSrc(site);
-  const navItems = normalizedNavItems.map((item) => ({
+  const ctaLabel = (navBlock?.content?.cta_label as string | undefined) ?? 'Contactar';
+  const normalizedCtaHref = normalizeFragment((navBlock?.content?.cta_href as string | undefined) ?? '#contacto');
+  const navItems = normalizedNavItems
+    .filter((item) => item.href !== normalizedCtaHref)
+    .map((item) => ({
     ...item,
     href: resolveSectionHref(item.href || '#inicio', pathname),
   }));
-  const ctaLabel = (navBlock?.content?.cta_label as string | undefined) ?? 'Contactar';
-  const ctaHref = resolveSectionHref((navBlock?.content?.cta_href as string | undefined) ?? '#contacto', pathname);
+  const ctaHref = resolveSectionHref(normalizedCtaHref, pathname);
   const homeHref = resolveSectionHref('#inicio', pathname);
   const currentSection = pathname === '/' ? activeHref : '';
 

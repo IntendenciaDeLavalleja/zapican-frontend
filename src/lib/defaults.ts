@@ -1,7 +1,8 @@
 import type { SitePublic, ThemePublic } from '@/lib/api/types';
+import { SITE_NAME } from '@/config';
 
 export const DEFAULT_SITE: SitePublic = {
-  name: 'Mi Sitio',
+  name: SITE_NAME,
   short_description: 'Sitio oficial',
 };
 
